@@ -3,6 +3,7 @@ import os
 import shutil
 import heapq
 import math
+from typing import List, Dict, Tuple
 
 class ColumnStore:
 
@@ -13,7 +14,7 @@ class ColumnStore:
         results_folder:str, 
         zone_size:int, 
         chunk_size:int,
-        mapper:dict,
+        mapper:Dict[str, str],
         relevant_cols:list
     ) -> None:
         
@@ -96,7 +97,7 @@ class ColumnStore:
 
         return temp_files
 
-    def composite_key_func(self, row:dict):
+    def composite_key_func(self, row:Dict[str, str]):
         year = row['year']
         month = row['month']
         town = row['town']
@@ -166,7 +167,7 @@ class ColumnStore:
 
         return zone_maps
 
-    def preprocess_row(self, row:dict, return_type:str):
+    def preprocess_row(self, row:Dict[str, str], return_type:str):
         # this function processes row read from any csv file
         def process_dict(row, col, value):
             row[col] = value
@@ -189,7 +190,7 @@ class ColumnStore:
                 value_mapping = {col:float(row[col]) if "." in row[col] else int(row[col]) for col in cols}
             else:
                 value_mapping = {
-                    "year": int(row["year"]) if "year" in row else int(row["month"].split("-")[0]),
+                    "year": int(row["year"]) if "year" in row else int(row["month"].split("-")[0][2:]),
                     "month": int(row["month"]) if "year" in row else int(row["month"].split("-")[1]),
                     "town": int(row['town']) if row['town'].replace("-", "").isdigit() \
                             else self.mapper['town2num'].get(row['town'], -1)
@@ -205,7 +206,7 @@ class ColumnStore:
         
         return new_row
 
-    def write_rows(self, rows:dict[list]):
+    def write_rows(self, rows:Dict[str, List]):
         """
         This function write each column of rows into seperate files to implement column store
         """
@@ -225,7 +226,7 @@ class ColumnStore:
                 writer.writerows(rows_col)
                 self.store_paths[col].append(store_path)
 
-    def get_zone_stats(self, zone:dict):
+    def get_zone_stats(self, zone:Dict[str, List]):
         zone_stat = {}
         # Calculate and store zone statistics
         for col, value_list in zone.items():
