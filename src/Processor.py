@@ -33,15 +33,16 @@ class Processor:
             commence_month = 10
         
         if year<4:
-            year = 2020 + year
+            # year = 2020 + year
+            year = 20 + year
         else:
-            year = 2010 + year
-
+            # year = 2010 + year
+            year = 10 + year
         return year, commence_month, commence_month+2, town
     
     def process_data(self):
         """Process the data"""
-        print(f"Processing data from year {self.year}, month {self.start_month} to {self.end_month} for town {self.town}...")
+        print(f"Processing data from year 20{self.year}, month {self.start_month} to {self.end_month} for town {self.town}...")
         self.zone_maps = self.storage_manager.zone_maps
         zone_indexes = self.get_relevant_zones(self.zone_maps)
         print("revelant zones")
