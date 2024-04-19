@@ -1,5 +1,6 @@
 .venv
 **__pycache__**
 results/
-split_data/
+col_store/
 data/ResalePricesSingapore_sorted.csv
+temp/
